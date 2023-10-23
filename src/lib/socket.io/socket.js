@@ -1,5 +1,5 @@
 import { io } from "socket.io-client";
 
-const url = "http://localhost:5000";
+const url = "https://videochat2-s7zy.onrender.com";
 
 export const socket = io(url);

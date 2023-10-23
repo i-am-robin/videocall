@@ -111,12 +111,12 @@ function App() {
         {PartnerVideo}
       </div>
       <div>
-        {Object.keys(users).map((key) => {
+        {Object.keys(users).map((key, i) => {
           if (key === yourID) {
             return <p>{"you: " + yourID}</p>;
           }
           return (
-            <button className="block" onClick={() => callPeer(key)}>
+            <button key={i} className="block" onClick={() => callPeer(key)}>
               Call {key}
             </button>
           );
