@@ -1,5 +1,8 @@
 "use client";
+import { socket } from "@/lib/socket.io/socket";
 import { useEffect, useRef, useState } from "react";
+import { io } from "socket.io-client";
+
 // import Peer from "peerjs";
 
 function App() {
@@ -36,6 +39,10 @@ function App() {
 
       peerInstance.current = peer;
     });
+
+    socket.on("connect", () => {
+      console.log(socket.id);
+    });
   }, []);
 
   const call = (remotePeerId) => {
@@ -44,7 +51,7 @@ function App() {
       navigator.webkitGetUserMedia ||
       navigator.mozGetUserMedia;
 
-    getUserMedia({ video: true, audio: true }, (mediaStream) => {
+    getUserMedia({ video: true, audio: false }, (mediaStream) => {
       currentUserVideoRef.current.srcObject = mediaStream;
       currentUserVideoRef.current.play();
 
