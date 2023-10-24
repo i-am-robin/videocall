@@ -10,30 +10,32 @@ function App() {
   const peerInstance = useRef(null);
 
   useEffect(() => {
-    const peer = new Peer();
+    import("peerjs").then(({ default: Peer }) => {
+      // normal synchronous code
+      const peer = new Peer();
+      peer.on("open", (id) => {
+        setPeerId(id);
+      });
 
-    peer.on("open", (id) => {
-      setPeerId(id);
-    });
+      peer.on("call", (call) => {
+        var getUserMedia =
+          navigator.getUserMedia ||
+          navigator.webkitGetUserMedia ||
+          navigator.mozGetUserMedia;
 
-    peer.on("call", (call) => {
-      var getUserMedia =
-        navigator.getUserMedia ||
-        navigator.webkitGetUserMedia ||
-        navigator.mozGetUserMedia;
-
-      getUserMedia({ video: true, audio: true }, (mediaStream) => {
-        currentUserVideoRef.current.srcObject = mediaStream;
-        currentUserVideoRef.current.play();
-        call.answer(mediaStream);
-        call.on("stream", function (remoteStream) {
-          remoteVideoRef.current.srcObject = remoteStream;
-          remoteVideoRef.current.play();
+        getUserMedia({ video: true, audio: true }, (mediaStream) => {
+          currentUserVideoRef.current.srcObject = mediaStream;
+          currentUserVideoRef.current.play();
+          call.answer(mediaStream);
+          call.on("stream", function (remoteStream) {
+            remoteVideoRef.current.srcObject = remoteStream;
+            remoteVideoRef.current.play();
+          });
         });
       });
-    });
 
-    peerInstance.current = peer;
+      peerInstance.current = peer;
+    });
   }, []);
 
   const call = (remotePeerId) => {
