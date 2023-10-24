@@ -15,19 +15,26 @@ function App() {
   const userVideo = useRef();
   const partnerVideo = useRef();
 
+  const getStream = async () => {
+    const videoStream = await navigator.mediaDevices.getUserMedia({
+      video: true,
+      audio: true,
+    });
+
+    userVideo.current.srcObject = videoStream;
+
+    setStream(videoStream);
+
+    return videoStream;
+  };
+
   useEffect(() => {
-    navigator.mediaDevices
-      .getUserMedia({ video: true, audio: true })
-      .then((stream) => {
-        setStream(stream);
-        if (userVideo.current) {
-          userVideo.current.srcObject = stream;
-        }
-      });
+    getStream();
 
     socket.on("yourID", (id) => {
       setYourID(id);
     });
+
     socket.on("allUsers", (users) => {
       setUsers(users);
     });
@@ -43,7 +50,6 @@ function App() {
     const peer = new Peer({
       initiator: true,
       trickle: false,
-
       stream: stream,
     });
 
@@ -85,30 +91,12 @@ function App() {
     peer.signal(callerSignal);
   }
 
-  let UserVideo;
-  if (stream) {
-    UserVideo = <video playsInline muted ref={userVideo} autoPlay />;
-  }
-
-  let PartnerVideo;
-  if (callAccepted) {
-    PartnerVideo = <video playsInline ref={partnerVideo} autoPlay />;
-  }
-
-  let incomingCall;
-  if (receivingCall) {
-    incomingCall = (
-      <div>
-        <h1>{caller} is calling you</h1>
-        <button onClick={acceptCall}>Accept</button>
-      </div>
-    );
-  }
   return (
     <div>
+      <p>YOur id: {yourID}</p>
       <div>
-        {UserVideo}
-        {PartnerVideo}
+        <video autoPlay ref={userVideo}></video>
+        <video autoPlay ref={partnerVideo}></video>
       </div>
       <div>
         {Object.keys(users).map((key, i) => {
@@ -122,7 +110,12 @@ function App() {
           );
         })}
       </div>
-      <div>{incomingCall}</div>
+      {receivingCall && (
+        <div>
+          <h1>{caller} is calling you</h1>
+          <button onClick={acceptCall}>Accept</button>
+        </div>
+      )}
     </div>
   );
 }
