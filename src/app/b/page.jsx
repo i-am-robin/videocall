@@ -1,20 +1,37 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import Peer from "peerjs";
+import { io } from "socket.io-client";
+
+const socket = io("https://videochat2-s7zy.onrender.com");
 
 function App() {
   const [peerId, setPeerId] = useState("");
+  const [socketId, setSocketId] = useState();
   const [remotePeerIdValue, setRemotePeerIdValue] = useState("");
+  const [usreName, setUserName] = useState("");
+
+  const [allUsers, setallUsers] = useState([]);
+
   const remoteVideoRef = useRef(null);
   const currentUserVideoRef = useRef(null);
   const peerInstance = useRef(null);
 
   useEffect(() => {
+    socket.on("connect", () => {
+      socket.on("yourId", (id) => {
+        setSocketId(id);
+      });
+    });
     import("peerjs").then(({ default: Peer }) => {
       // normal synchronous code
       const peer = new Peer();
       peer.on("open", (id) => {
         setPeerId(id);
+        socket.emit("newId", {
+          name: usreName,
+          peerId: id,
+          socketId: socket.id,
+        });
       });
 
       peer.on("call", (call) => {
@@ -36,9 +53,19 @@ function App() {
 
       peerInstance.current = peer;
     });
+
+    socket.on("allUsers", (users) => {
+      setallUsers(users);
+      console.log(users);
+    });
   }, []);
 
-  const call = (remotePeerId) => {
+  const call = (remotePeerId, userToCall) => {
+    socket.emit("callUser", {
+      callToId: userToCall,
+      callFromId: socketId,
+      callerName: usreName,
+    });
     var getUserMedia =
       navigator.getUserMedia ||
       navigator.webkitGetUserMedia ||
@@ -58,7 +85,7 @@ function App() {
   };
 
   return (
-    <div className="App">
+    <div className="App bg-black-dark h-screen">
       <h1>Current user id is {peerId}</h1>
       <input
         type="text"
@@ -69,9 +96,28 @@ function App() {
       <div>
         <video muted ref={currentUserVideoRef} />
       </div>
+      <input
+        type="text"
+        value={usreName}
+        placeholder="Your Name"
+        onChange={(e) => setUserName(e.target.value)}
+      />
       <div>
         <video ref={remoteVideoRef} />
       </div>
+
+      <p>Your socket id : {socketId}</p>
+
+      {allUsers.map((user, i) => (
+        <button
+          key={i}
+          className="block mb-1"
+          onClick={() => {
+            call(user.peerId);
+          }}>
+          {user.peerId}
+        </button>
+      ))}
     </div>
   );
 }

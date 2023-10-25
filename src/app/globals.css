@@ -1,3 +1,22 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+p,
+h1,
+h2,
+h3 {
+  @apply text-white-prymary;
+}
+
+span {
+  @apply text-white-prymary text-opacity-80;
+}
+
+input {
+  @apply text-white-prymary bg-black-dark border border-white-prymary;
+}
+
+button {
+  @apply bg-red-prymary text-white-prymary px-2 py-1;
+}
