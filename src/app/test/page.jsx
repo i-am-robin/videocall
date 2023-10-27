@@ -5,6 +5,7 @@ import Peer from "simple-peer";
 import { io } from "socket.io-client";
 
 const socket = io("https://videochat2-s7zy.onrender.com");
+// const socket = io("http://localhost:5000");
 
 function Chattest() {
   const [videoStream, setVideoStream] = useState();
@@ -111,7 +112,7 @@ function Chattest() {
       {users.map((user, i) => {
         return (
           <button className="block" onClick={() => callPeer(user)} key={i}>
-            call: {user}
+            {user}
           </button>
         );
       })}
