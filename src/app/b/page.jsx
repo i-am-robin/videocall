@@ -43,10 +43,12 @@ function App() {
         getUserMedia({ video: true, audio: true }, (mediaStream) => {
           currentUserVideoRef.current.srcObject = mediaStream;
           currentUserVideoRef.current.play();
+          currentUserVideoRef.current.muted = true;
           call.answer(mediaStream);
           call.on("stream", function (remoteStream) {
             remoteVideoRef.current.srcObject = remoteStream;
             remoteVideoRef.current.play();
+            
           });
         });
       });
