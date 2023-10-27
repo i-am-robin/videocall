@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import Peer from "simple-peer";
 import { io } from "socket.io-client";
 
-const socket = io("http://localhost:5000");
+const socket = io("https://videochat2-s7zy.onrender.com");
 
 function Chattest() {
   const [videoStream, setVideoStream] = useState();
