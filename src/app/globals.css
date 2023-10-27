@@ -9,14 +9,23 @@ h3 {
   @apply text-white-prymary;
 }
 
+h2 {
+  @apply text-xl font-semibold;
+}
+
 span {
   @apply text-white-prymary text-opacity-80;
 }
 
-input {
-  @apply text-white-prymary bg-black-dark border border-white-prymary;
+input,
+textarea {
+  @apply text-white-prymary bg-grey-300 px-4 py-2 rounded-full outline-none;
 }
 
 button {
-  @apply bg-red-prymary text-white-prymary px-2 py-1;
+  @apply bg-white-prymary bg-opacity-20 text-white-prymary px-2 py-1 transition-all duration-200 ease-out;
+}
+
+img {
+  @apply h-full w-full;
 }
