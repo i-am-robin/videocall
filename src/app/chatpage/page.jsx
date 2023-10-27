@@ -12,7 +12,7 @@ function ChatPage() {
   return (
     <div className="max-h-screen flex flex-col h-screen bg-black-dark">
       {users.map((userData, i) => {
-        return <HeaderSection userData={userData} />;
+        return <HeaderSection key={i} userData={userData} />;
       })}
       <FooterChat />
     </div>

@@ -9,6 +9,7 @@ function SingleUser() {
           src={"/images/profile.jpg"}
           height={100}
           width={100}
+          alt="a"
           className="object-cover"
         />
       </div>

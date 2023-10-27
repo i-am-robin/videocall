@@ -31,6 +31,7 @@ function HeaderSection({ userData }) {
           src={userData.userProfilePic}
           height={100}
           width={100}
+          alt="a"
           className="object-cover"
         />
       </ProfilePic>

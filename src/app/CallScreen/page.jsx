@@ -15,6 +15,7 @@ function CallScreenPage() {
             height={100}
             width={100}
             className="object-cover"
+            alt="a"
           />
         </div>
         <h2>Robin Mia</h2>
