@@ -64,9 +64,12 @@ function Chattest() {
     const peer = new Peer({
       initiator: true,
       trickle: false,
-      // config: {
-      //   iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
-      // },
+      config: {
+        iceServers: [
+          { urls: "stun:stun.l.google.com:19302" },
+          // { urls: "stun:stun.2talk.com:3478" },
+        ],
+      },
       stream: videoStream,
     });
 
@@ -91,6 +94,12 @@ function Chattest() {
     const peer = new Peer({
       initiator: false,
       trickle: false,
+      config: {
+        iceServers: [
+          { urls: "stun:stun.l.google.com:19302" },
+          // { urls: "stun:stun.2talk.com:3478" },
+        ],
+      },
       stream: videoStream,
     });
     peer.on("signal", (data) => {
