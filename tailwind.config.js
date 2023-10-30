@@ -8,8 +8,9 @@ module.exports = {
   theme: {
     colors: {
       prymary: "#0084FF",
-      "grey-300": "#3A3B3C",
-      "black-dark": "#131313",
+      "grey-100": "#1B2730",
+      "grey-300": "#28343E",
+      "black-dark": "#06141D",
       "red-prymary": "#FF3B32",
       "white-prymary": "#FEFEFD",
       transparent: "#00000",

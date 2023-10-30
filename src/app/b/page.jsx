@@ -4,7 +4,7 @@ import { io } from "socket.io-client";
 
 const socket = io("https://videochat2-s7zy.onrender.com");
 
-function App() {
+function Apps() {
   const [peerId, setPeerId] = useState("");
   const [socketId, setSocketId] = useState();
   const [remotePeerIdValue, setRemotePeerIdValue] = useState("");

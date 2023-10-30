@@ -1,22 +1,30 @@
+"use client";
 import SingleUser from "@/components/homePage/SingleUser";
-import React from "react";
+import { getAllUsers } from "@/serverActions/GetAllUsers";
+import { useEffect, useState } from "react";
 
 function HomePage() {
+  const [friends, setFriends] = useState([]);
+
+  useEffect(() => {
+    async function run() {
+      const reqFriends = await getAllUsers();
+      setFriends(reqFriends);
+      console.log(friends);
+    }
+
+    run();
+    return () => {};
+  }, []);
+
   return (
     <div className="bg-black-dark h-screen p-2">
       <h2 className="ml-2">Messeging</h2>
-      <button className="w-full bg-opacity-0 rounded-md transition-all duration-300 hover:bg-opacity-20 ">
-        <SingleUser />
-      </button>
-      <button className="w-full bg-opacity-0 rounded-md transition-all duration-300 hover:bg-opacity-20 ">
-        <SingleUser />
-      </button>
-      <button className="w-full bg-opacity-0 rounded-md transition-all duration-300 hover:bg-opacity-20 ">
-        <SingleUser />
-      </button>
-      <button className="w-full bg-opacity-0 rounded-md transition-all duration-300 hover:bg-opacity-20 ">
-        <SingleUser />
-      </button>
+      {friends &&
+        friends.length > 0 &&
+        friends.map((friend, i) => {
+          return <SingleUser key={i} user={friend} />;
+        })}
     </div>
   );
 }

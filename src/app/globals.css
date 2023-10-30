@@ -1,12 +1,15 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-/* 
 p,
 h1,
 h2,
 h3 {
   @apply text-white-prymary;
+}
+
+h1 {
+  @apply text-2xl font-semibold;
 }
 
 h2 {
@@ -19,13 +22,13 @@ span {
 
 input,
 textarea {
-  @apply text-white-prymary bg-grey-300 px-4 py-2 rounded-full outline-none;
+  @apply text-white-prymary bg-grey-300 px-4 py-2 rounded-full outline-none placeholder:text-white-prymary placeholder:text-opacity-50 border-[2px] border-grey-400 border-opacity-20 focus:border-prymary transition-all ease-out;
 }
 
 button {
-  @apply bg-white-prymary bg-opacity-20 text-white-prymary px-2 py-1 transition-all duration-200 ease-out;
+  @apply bg-white-prymary bg-opacity-20 text-white-prymary px-2 py-1 transition-all duration-200 ease-out hover:bg-opacity-80 font-semibold;
 }
 
 img {
   @apply h-full w-full;
-} */
+}
