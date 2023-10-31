@@ -123,4 +123,4 @@ function Apps() {
   );
 }
 
-export default App;
+export default Apps;
