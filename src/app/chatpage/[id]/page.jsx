@@ -6,9 +6,7 @@ import { getUserWithId } from "@/serverActions/GetUserWithId";
 import { useRouter } from "next/navigation";
 import React, { useContext, useEffect, useState } from "react";
 
-function ChatPage() {
-  const { chatUserId } = useContext(UserContext);
-
+function ChatPage({ params }) {
   const [name, setName] = useState();
 
   const router = useRouter();
@@ -16,7 +14,8 @@ function ChatPage() {
   useEffect(() => {
     console.log("wait");
     async function run() {
-      const user = await getUserWithId(chatUserId);
+      const user = await getUserWithId(params.id);
+      console.log(user);
       if (user === "no id") {
         router.push("/");
       }
@@ -25,12 +24,11 @@ function ChatPage() {
     }
 
     run();
-
-    return () => {};
   }, []);
 
   const users = {
     userName: name,
+    id: params.id,
     userProfilePic: "/images/profile.jpg",
   };
 

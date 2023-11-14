@@ -11,8 +11,9 @@ export const getAllUsers = async () => {
 
     const users = req.map((user) => {
       return {
-        _id: user._id.toString(),
+        id: user._id.toString(),
         name: user.name,
+        active: false,
       };
     });
 

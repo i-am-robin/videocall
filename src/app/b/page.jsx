@@ -1,126 +1,138 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
-import { io } from "socket.io-client";
 
-const socket = io("https://videochat2-s7zy.onrender.com");
+import React, { useEffect, useRef, useState } from "react";
+import Peer from "simple-peer";
 
-function Apps() {
-  const [peerId, setPeerId] = useState("");
-  const [socketId, setSocketId] = useState();
-  const [remotePeerIdValue, setRemotePeerIdValue] = useState("");
-  const [usreName, setUserName] = useState("");
+function P() {
+  const offerSdp = useRef();
+  const ansSdp = useRef();
 
-  const [allUsers, setallUsers] = useState([]);
+  const [localStrim, setLocaStream] = useState();
+  const [remotelstrim, setRemoteStream] = useState();
 
-  const remoteVideoRef = useRef(null);
-  const currentUserVideoRef = useRef(null);
-  const peerInstance = useRef(null);
+  const userStream = useRef();
+  const remoteStream = useRef();
 
-  useEffect(() => {
-    socket.on("connect", () => {
-      socket.on("yourId", (id) => {
-        setSocketId(id);
-      });
+  const peerInstance = useRef();
+
+  const remoteVIdeo = useRef();
+
+  let servers = {
+    iceServers: [
+      {
+        urls: [
+          "stun:stun1.1.google.com:19302",
+          "stun:stun2.1.google.com:19302",
+        ],
+      },
+    ],
+  };
+
+  // useEffect(() => {
+  //   async function run() {
+  //     const st = await navigator.mediaDevices.getUserMedia({
+  //       video: true,
+  //       audio: true,
+  //     });
+
+  //     setLocaStream(st);
+  //     userStream.current.srcObject = st;
+  //   }
+
+  //   run();
+  // }, []);
+
+  const createPeerOffer = async () => {
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: true,
+      audio: true,
     });
-    import("peerjs").then(({ default: Peer }) => {
-      // normal synchronous code
-      const peer = new Peer();
-      peer.on("open", (id) => {
-        setPeerId(id);
-        socket.emit("newId", {
-          name: usreName,
-          peerId: id,
-          socketId: socket.id,
-        });
-      });
-
-      peer.on("call", (call) => {
-        var getUserMedia =
-          navigator.getUserMedia ||
-          navigator.webkitGetUserMedia ||
-          navigator.mozGetUserMedia;
-
-        getUserMedia({ video: true, audio: true }, (mediaStream) => {
-          currentUserVideoRef.current.srcObject = mediaStream;
-          currentUserVideoRef.current.play();
-          currentUserVideoRef.current.muted = true;
-          call.answer(mediaStream);
-          call.on("stream", function (remoteStream) {
-            remoteVideoRef.current.srcObject = remoteStream;
-            remoteVideoRef.current.play();
-          });
-        });
-      });
-
-      peerInstance.current = peer;
+    userStream.current.srcObject = stream;
+    const peer = new Peer({
+      initiator: true,
+      trickle: false,
+      config: {
+        iceServers: [
+          {
+            urls: [
+              "stun:stun1.1.google.com:19302",
+              "stun:stun2.1.google.com:19302",
+            ],
+          },
+        ],
+      },
+      // wrtc: {},
+      stream: stream,
     });
 
-    socket.on("allUsers", (users) => {
-      setallUsers(users);
-      console.log(users);
+    peer.on("signal", (data) => {
+      offerSdp.current.value = JSON.stringify(data);
     });
-  }, []);
 
-  const call = (remotePeerId, userToCall) => {
-    socket.emit("callUser", {
-      callToId: userToCall,
-      callFromId: socketId,
-      callerName: usreName,
+    peer.on("stream", (stream) => {
+      remoteStream.current.srcObject = stream;
     });
-    var getUserMedia =
-      navigator.getUserMedia ||
-      navigator.webkitGetUserMedia ||
-      navigator.mozGetUserMedia;
 
-    getUserMedia({ video: true, audio: true }, (mediaStream) => {
-      currentUserVideoRef.current.srcObject = mediaStream;
-      currentUserVideoRef.current.play();
+    peerInstance.current = peer;
+  };
 
-      const call = peerInstance.current.call(remotePeerId, mediaStream);
+  const addAns = async () => {
+    peerInstance.current.signal(ansSdp.current.value);
+  };
 
-      call.on("stream", (remoteStream) => {
-        remoteVideoRef.current.srcObject = remoteStream;
-        remoteVideoRef.current.play();
-      });
+  const createAns = async () => {
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: true,
+      audio: true,
     });
+    userStream.current.srcObject = stream;
+    const peer = new Peer({
+      initiator: false,
+      trickle: false,
+      stream: stream,
+    });
+
+    peer.on("signal", (data) => {
+      ansSdp.current.value = JSON.stringify(data);
+    });
+
+    peer.on("stream", (stream) => {
+      remoteStream.current.srcObject = stream;
+    });
+
+    peer.signal(offerSdp.current.value);
   };
 
   return (
-    <div className="App bg-black-dark h-screen">
-      <h1>Current user id is {peerId}</h1>
-      <input
-        type="text"
-        value={remotePeerIdValue}
-        onChange={(e) => setRemotePeerIdValue(e.target.value)}
-      />
-      <button onClick={() => call(remotePeerIdValue)}>Call</button>
-      <div>
-        <video muted ref={currentUserVideoRef} />
-      </div>
-      <input
-        type="text"
-        value={usreName}
-        placeholder="Your Name"
-        onChange={(e) => setUserName(e.target.value)}
-      />
-      <div>
-        <video ref={remoteVideoRef} />
-      </div>
+    <div className="bg-black-dark h-screen">
+      <video
+        autoPlay
+        ref={userStream}
+        className="border border-prymary inline-flex m-2 h-60"></video>
+      <video
+        autoPlay
+        ref={remoteStream}
+        className="border border-prymary inline-flex m-2 h-60"></video>
+      <br />
+      <button onClick={createPeerOffer}>Create offer</button>
 
-      <p>Your socket id : {socketId}</p>
+      <br />
+      <br />
+      <br />
 
-      {allUsers.map((user, i) => (
-        <button
-          key={i}
-          className="block mb-1"
-          onClick={() => {
-            call(user.peerId);
-          }}>
-          {user.peerId}
-        </button>
-      ))}
+      <p>SDP Offer</p>
+      <textarea ref={offerSdp} className="w-full mx-2 rounded-sm"></textarea>
+
+      <br />
+      <br />
+      <br />
+
+      <button onClick={addAns}>Add Ans</button>
+      <p>ans offer</p>
+      <textarea ref={ansSdp} className="w-full mx-2 rounded-sm"></textarea>
+      <button onClick={createAns}>Create Ans</button>
     </div>
   );
 }
 
-export default Apps;
+export default P;

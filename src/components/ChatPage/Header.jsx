@@ -9,22 +9,16 @@ import Image from "next/image";
 import React, { useContext, useState } from "react";
 import ProfilePic from "../ProfilePic";
 import { useRouter } from "next/navigation";
-import { CallContext } from "@/Context/CallContext";
+import { UserContext } from "@/Context/UserContext";
 
 function HeaderSection({ userData }) {
-  const [callId, setCallId] = useState();
   const router = useRouter();
-
-  const { peerId, makeCall } = useContext(CallContext);
-
-  console.log(peerId);
 
   const handleAudioCall = () => {
     console.log("audio call");
   };
   const handleVideoCall = () => {
-    console.log("video call");
-    makeCall(callId);
+    router.push(`/callpage/${userData.id}`);
   };
 
   return (
