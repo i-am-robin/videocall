@@ -104,7 +104,7 @@ function P() {
   };
 
   return (
-    <div className="bg-black-dark h-screen">
+    <div className="bg-black-dark h-full min-h-screen ">
       <video
         autoPlay
         ref={userStream}
@@ -121,7 +121,7 @@ function P() {
       <br />
 
       <p>SDP Offer</p>
-      <textarea ref={offerSdp} className="w-full mx-2 rounded-sm"></textarea>
+      <textarea ref={offerSdp} className="w-40 mx-2 rounded-sm"></textarea>
 
       <br />
       <br />
@@ -129,7 +129,7 @@ function P() {
 
       <button onClick={addAns}>Add Ans</button>
       <p>ans offer</p>
-      <textarea ref={ansSdp} className="w-full mx-2 rounded-sm"></textarea>
+      <textarea ref={ansSdp} className="w-40 mx-2 rounded-sm"></textarea>
       <button onClick={createAns}>Create Ans</button>
     </div>
   );
